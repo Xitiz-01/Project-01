@@ -1,7 +1,10 @@
 const express = require("express");
+const fs = require("fs"); 
 const users = require("./MOCK_DATA.json");
 const app = express();
 const port = 8000;
+//Middleware - Plugin
+app.use(express.urlencoded({ extended: false }));
 //Routes 
 app.get("/api/users",(req,res) => {
     return res.json(users);
@@ -24,8 +27,12 @@ app.get("/api/users/car/:car_model", (req,res) => {
 })
 
 app.post("/api/users", (req,res) => {
-    //To DO : Create a new usr
-    return res.json({ status : "pending" });
+    //To DO : Create a new user
+    const body = req.body;
+    users.push({...body, id: users.length + 1});
+    fs.writeFile("./MOCK_DATA.json", JSON.stringify(users), (err,data) => {
+    return res.json({ status : "success", id: users.length});
+    });
 });
 app
 
