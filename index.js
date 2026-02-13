@@ -44,9 +44,15 @@ app
     return res.json(user);
 })
 .patch((req,res) => {
-    //To DO : Edit a user with id
-    return res.json({ status : "pending" });
+    const body = req.body;
+    const id = Number(req.params.id);
+    const userindex = users.findIndex((user) => user.id === id);
+        users[userindex] = {...users[userindex], ...body};
+        fs.writeFile("./MOCK_DATA.json", JSON.stringify(users), (err,data) => {
+            return res.json({ status : "success", id: users[userindex].id});
+        });
 })
+
 .delete((req,res) => {
     //To DO : Delete the user with id
     return res.json({ status : "pending" });
