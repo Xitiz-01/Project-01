@@ -7,7 +7,13 @@ const port = 8000;
 app.use(express.urlencoded({ extended: false }));
 app.use((req,res,next) => {
     console.log("Hello from Middleware 1");
+    req.myUsername = "John Doe";
     next();
+});
+app.use((req,res,next) => {
+    fs.appendFile("log.text",`${Date.now()}: ${req.method} : ${req.path}\n`, (err,data) => {
+    next();
+});
 });
 //Routes 
 app.get("/api/users",(req,res) => {
