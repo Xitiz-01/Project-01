@@ -21,3 +21,13 @@
   1771495123857: ::1: GET : /api/users
 
   1771495125759: ::1: GET : /api/users
+
+  1771495857827: ::1: POST : /api/users/
+
+  1771495861620: ::1: POST : /api/users/
+
+  1771496220281: ::1: POST : /api/users/
+
+  1771496223399: ::1: POST : /api/users/
+
+  1771496241348: ::1: POST : /api/users/
