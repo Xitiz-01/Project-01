@@ -17,7 +17,8 @@ app.use((req,res,next) => {
 });
 //Routes 
 app.get("/api/users",(req,res) => {
-    res.setHeader("MyName", "Kshitij Londhe");
+    res.setHeader("X-MyName", "Kshitij Londhe"); 
+    //Always add X before custom headers to avoid conflicts with standard headers
     console.log(req.headers);
     return res.json(users);
 })
