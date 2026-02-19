@@ -1,8 +1,41 @@
 const express = require("express");
 const fs = require("fs"); 
-const users = require("./MOCK_DATA.json");
+const mongoose = require("mongoose");  
 const app = express();
 const port = 8000;
+//Connect to MongoDB
+mongoose.connect('mongodb://127.0.0.1:27017/myapp1')
+.then(() => console.log("Connected to MongoDB"))
+.catch((err) => console.log("Error connecting to MongoDB:", err));
+//Schema
+const userSchema = new mongoose.Schema({
+    firstName : {
+        type: String,
+        required: true
+    },
+    lastName : {
+        type: String,
+        required: false
+    },    
+    email : {
+        type: String,
+        required: true,
+        unique: true
+    },
+    gender : {
+        type: String,
+        required: true
+    },
+    car_model : {
+        type: String,
+        required: true
+    },
+},
+    {timestamps:true
+});
+
+const User = mongoose.model("User", userSchema);
+
 //Middleware - Plugin
 app.use(express.urlencoded({ extended: false }));
 app.use((req,res,next) => {
@@ -16,16 +49,18 @@ app.use((req,res,next) => {
 });
 });
 //Routes 
-app.get("/api/users",(req,res) => {
+app.get("/api/users",async (req,res) => {
+    const allDbUsers = await User.find({});
     res.setHeader("X-MyName", "Kshitij Londhe"); 
     //Always add X before custom headers to avoid conflicts with standard headers
     console.log(req.headers);
-    return res.json(users);
+    return res.json(allDbUsers);
 })
-app.get("/users", (req, res) => {
+app.get("/users", async (req, res) => {
+    const allDbUsers = await User.find({});
     const html = `
     <ul>
-        ${users.map(user => `<li>${user.first_name}</li>`).join('')}
+        ${allDbUsers.map(user => `<li>${user.firstName} - ${user.email}</li>`).join('')}
     </ul>
     `;
     res.send(html);
@@ -39,49 +74,43 @@ app.get("/api/users/car/:car_model", (req,res) => {
     return res.json(user);
 })
 
-app.post("/api/users", (req,res) => {
+app.post("/api/users", async (req,res) => {
     //To DO : Create a new user
     const body = req.body;
     if(!body.first_name || !body.last_name || !body.email) {
         return res.status(400).json({ status : "failure", message: "All fields  are required"});
     }  
-    users.push({...body, id: users.length + 1});
-    fs.writeFile("./MOCK_DATA.json", JSON.stringify(users), (err,data) => {
-    return res.status(201).json({ status : "success", id: users.length});
-    });
+   const result = await User.create({
+        firstName : body.first_name,
+        lastName : body.last_name,
+        email : body.email,
+        gender : body.gender,
+        car_model : body.car_model
+});
+console.log("result",result);
+return res.status(201).json({ status : "success"})
 });
 app
 
 //grouping of routes with same path
 .route("/api/users/:id")
-    .get((req,res) => {
-    const id = Number(req.params.id);
-    const user = users.find((user) => user.id === id);
+    .get(async (req,res) => {
+    const user = await User.findById(req.params.id);
     if(!user) {
-        return res.status(404).json({ status : "failure", message: "User not found"});
+        return res.status(404).json({ status : "failure", message: "User not found"});  
     }
     return res.json(user);
 })
-.patch((req,res) => {
-    const body = req.body;
-    const id = Number(req.params.id);
-    const userindex = users.findIndex((user) => user.id === id);
-        users[userindex] = {...users[userindex], ...body};
-        fs.writeFile("./MOCK_DATA.json", JSON.stringify(users), (err,data) => {
-            return res.json({ status : "success", id: users[userindex].id});
-        });
+.patch(async (req,res) => {
+  await User.findByIdAndUpdate(req.params.id, { lastName : "Changed"});
 })
 
-.delete((req,res) => {
+.delete(async(req,res) => {
     //To DO : Delete the user with id
-    const body = req.body;
-    const id = Number(req.params.id);
-    const userIndex = users.findIndex(user => user.id === id);
-    const deletedUser = users.splice(userIndex, 1);
-    fs.writeFile("./MOCK_DATA.json", JSON.stringify(users), (err,data) => {
-        return res.json({ status : "success", id: deletedUser[0].id});
+    await User.findByIdAndDelete(req.params.id);
+        return res.json({ status : "success"});
 });
-})
+
 // app.patch("/api/users/id:", (req,res) => {
 //     //To DO : Edit a user with id
 //     return res.json({ status : "pending" });
