@@ -11,7 +11,7 @@ app.use((req,res,next) => {
     next();
 });
 app.use((req,res,next) => {
-    fs.appendFile("log.text",`${Date.now()}: ${req.method} : ${req.path}\n`, (err,data) => {
+    fs.appendFile("log.text",`\n  ${Date.now()}: ${req.ip}: ${req.method} : ${req.path}\n`, (err,data) => {
     next();
 });
 });
