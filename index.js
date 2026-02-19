@@ -17,6 +17,8 @@ app.use((req,res,next) => {
 });
 //Routes 
 app.get("/api/users",(req,res) => {
+    res.setHeader("MyName", "Kshitij Londhe");
+    console.log(req.headers);
     return res.json(users);
 })
 app.get("/users", (req, res) => {
