@@ -1,0 +1,32 @@
+
+  1771525308666: ::1: GET : /api/users
+
+  1771525473766: ::1: POST : /api/users
+
+  1771525589855: ::1: POST : /
+
+  1771525610649: ::1: POST : /
+
+  1771525611653: ::1: POST : /
+
+  1771525615832: ::1: POST : /api/users
+
+  1771525903021: ::1: POST : /api/users
+
+  1771525904021: ::1: POST : /api/users
+
+  1771526277120: ::1: POST : /api/users
+
+  1771526277854: ::1: POST : /api/users
+
+  1771526343495: ::1: POST : /api/users
+
+  1771526383371: ::1: GET : /api/users
+
+  1771526395347: ::1: GET : /api/users/699758c76fea954ffc34219b
+
+  1771526403030: ::1: DELETE : /api/users/699758c76fea954ffc34219b
+
+  1771526406080: ::1: GET : /api/users/699758c76fea954ffc34219b
+
+  1771526409683: ::1: GET : /api/users
